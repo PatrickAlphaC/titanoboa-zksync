@@ -5,7 +5,7 @@ all: lint build
 lint: mypy black flake8 isort
 
 mypy:
-	mypy \
+	uv run mypy \
 		--disable-error-code "annotation-unchecked" \
 		--follow-imports=silent \
 		--ignore-missing-imports \
@@ -15,23 +15,23 @@ mypy:
 		-p boa_zksync
 
 black:
-	black -C -t py311 boa_zksync/ tests/
+	uv run black -C -t py311 boa_zksync/ tests/
 
 flake8: black
-	flake8 boa_zksync/ tests/
+	uv run flake8 boa_zksync/ tests/
 
 isort: black
-	isort boa_zksync/ tests/ setup.py
+	uv run isort boa_zksync/ tests/ setup.py
 
 build:
-	pip install .
+	uv sync --all-extras
 
 # run tests without forked tests (which require access to a node)
 test:
-	pytest -nauto tests/
+	uv run pytest -nauto tests/
 
 coverage:
-	  pytest \
+	uv run pytest \
 		  --cov=boa_zksync \
 		  --cov-append \
 		  --cov-report term-missing:skip-covered \
